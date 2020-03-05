@@ -27,6 +27,7 @@ while True:
     
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1)
+    #ESC key
     if key == 27:
         break
 
