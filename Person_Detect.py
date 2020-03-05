@@ -11,19 +11,20 @@ hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 while True:
     _, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=2.0)
+    cl1 = clahe.apply(gray)
+   
     #winStride determines x, y steps of sliding window for finding HOG, affects
     #Accuracy and speed of algo
     #Scale determines number of lvls in img pyramid, allows for dec size for inc res
     #Could help determine grad dir accurately, at cost of proc time
     #Train on gray-scale for better accuracy/consistency
-    (rects, weights) = hog.detectMultiScale(gray, winStride=(4,4),
+    (rects, weights) = hog.detectMultiScale(cl1, winStride=(4,4),
      padding=(8,8), scale=1.05)
-    for(x, y, w, h) in rects:
-        cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 0, 255), 2)
     
     #Apply NMS, loop over all bounding boxes, contain in arr
     rects = np.array([[x, y, x+w, y+h] for (x, y, w, h) in rects])
-    pick = non_max_suppression(rects, probs=None, overlapThresh=0.65)
+    pick = non_max_suppression(rects, probs=None, overlapThresh=0.4)
 
     #Draw rem bb
     for(xA, yA, xB, yB) in pick:

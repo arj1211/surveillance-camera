@@ -1,16 +1,17 @@
 import cv2
-import time
-import numpy as np
+
            
 cap = cv2.VideoCapture(0)
 
 while True:
     _, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=2.0)
+    cl1 = clahe.apply(gray)
     
     #Multiscale on pyramid using CascadeClassifier, pretrained model
     objects = cv2.CascadeClassifier("fullbody_recognition_model.xml").detectMultiScale(
-            gray,
+            cl1,
             scaleFactor=1.1,
             minNeighbors=5,
             minSize=(20, 20),
