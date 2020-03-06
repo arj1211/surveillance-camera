@@ -25,9 +25,11 @@ while True:
     #Draw remaining bounding boxes
     for(xA, yA, xB, yB) in pick:
         cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
-    date = str(datetime.datetime.now())
+    
+    #Set up current date/time    
+    date = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     #(frame, text, pos, font, thickness, colour, thickness, line-type)    
-    frame = cv2.putText(frame, date, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+    frame = cv2.putText(frame, date, (265, 465), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
     
     cv2.imshow("Live Feed", frame)
     key = cv2.waitKey(1)
