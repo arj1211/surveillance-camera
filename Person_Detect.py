@@ -1,24 +1,20 @@
 import numpy as np
 import cv2
+import datetime
 from imutils.object_detection import non_max_suppression
 
 cap = cv2.VideoCapture(0)
-
-#Create HOG desc, import pretrained params
-hog = cv2.HOGDescriptor()
+hog = cv2.HOGDescriptor()#Create HOG desc, import pretrained params
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
 while True:
     _, frame = cap.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=2.0)
-    cl1 = clahe.apply(gray)
+    cl1 = clahe.apply(gray) #Apply CLAHE for consistent lighting b/w diff cam env
    
-    #winStride determines x, y steps of sliding window for finding HOG, affects
-    #Accuracy and speed of algo
-    #Scale determines number of lvls in img pyramid, allows for dec size for inc res
-    #Could help determine grad dir accurately, at cost of proc time
-    #Train on gray-scale for better accuracy/consistency
+    #winStride determines x, y steps of sliding window for finding HOG, affects accuracy, speed
+    #Scale determines number of lvls img pyramid, allows dec size for inc res, could help determine grad dir accurately, at cost of proc time
     (rects, weights) = hog.detectMultiScale(cl1, winStride=(4,4),
      padding=(8,8), scale=1.05)
     
@@ -26,14 +22,16 @@ while True:
     rects = np.array([[x, y, x+w, y+h] for (x, y, w, h) in rects])
     pick = non_max_suppression(rects, probs=None, overlapThresh=0.4)
 
-    #Draw rem bb
+    #Draw remaining bounding boxes
     for(xA, yA, xB, yB) in pick:
         cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
+    date = str(datetime.datetime.now())
+    #(frame, text, pos, font, thickness, colour, thickness, line-type)    
+    frame = cv2.putText(frame, date, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
     
-    cv2.imshow("frame", frame)
+    cv2.imshow("Live Feed", frame)
     key = cv2.waitKey(1)
-    #ESC Key
-    if key == 27:
+    if key == 27: #esc to exit
         break
 cap.release()
 cv2.destroyAllWindows()
