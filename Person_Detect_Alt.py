@@ -10,7 +10,7 @@ while True:
     cl1 = clahe.apply(gray)
     
     #Multiscale on pyramid using CascadeClassifier, pretrained model
-    objects = cv2.CascadeClassifier("fullbody_recognition_model.xml").detectMultiScale(
+    objects = cv2.CascadeClassifier("facial_recognition_model.xml").detectMultiScale(
             cl1,
             scaleFactor=1.1,
             minNeighbors=5,
