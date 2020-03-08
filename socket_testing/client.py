@@ -1,11 +1,14 @@
+#Imports library
 import socket
 
-HOST = '127.0.0.1'  # The server's hostname or IP address
-PORT = 65432        # The port used by the server
+#Creates instance of 'Socket'
+s = socket.socket()
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.connect((HOST, PORT))
-    s.sendall(b'Hello, world')
-    data = s.recv(1024)
+hostname = 'host name or host ip' #Server IP/Hostname
+port = 8000 #Server Port
 
-print('Received', repr(data))
+s.connect((hostname,port)) #Connects to server
+
+while True:
+    x = input("Enter message: ") #Gets the message to be sent
+    s.send(x.encode()) #Encodes and sends message (x)

@@ -1,17 +1,34 @@
+#Imports modules
 import socket
+#import RPi.GPIO as GPIO
+import time
 
-HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
+listensocket = socket.socket() #Creates an instance of socket
+Port = 8000 #Port to host server on
+maxConnections = 999
+IP = socket.gethostname() #IP address of local machine
+listensocket.bind(('',Port))
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    print('waiting...')
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            conn.sendall(data)
+#Starts server
+listensocket.listen(maxConnections)
+print("Server started at " + IP + " on port " + str(Port))
+
+#Accepts the incomming connection
+(clientsocket, address) = listensocket.accept()
+print("New connection made!")
+
+running = True
+
+##Sets up the GPIOs --Can only be used on Raspberry Pi
+#GPIO.setmode(GPIO.BOARD)
+#GPIO.setup(7,GPIO.OUT)
+
+while running:
+    message = clientsocket.recv(1024).decode() #Gets the incomming message
+    print(message)
+    clientsocket.send(input('Response?: ').encode())
+    if not message == "":
+        #GPIO.output(7,True)
+        time.sleep(2)
+        #GPIO.output(7,False)
+    
